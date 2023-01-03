@@ -1,0 +1,31 @@
+{
+  "name": "indeed-bot",
+  "version": "1.0.0",
+  "description": "automate application submission with custom attributes added to cover letter from individual job posting",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hugh-bowie/indeed-bot.git"
+  },
+  "keywords": [
+    "indeed"
+  ],
+  "author": "hb.iv",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hugh-bowie/indeed-bot/issues"
+  },
+  "homepage": "https://github.com/hugh-bowie/indeed-bot#readme",
+  "dependencies": {
+		"dotenv": "^10.0.0",
+		"fs-extra": "^10.0.1",
+		"netlify-cli": "^10.10.2",
+		"node-schedule": "^1.3.3",
+		"puppeteer": "^13.7.0",
+		"puppeteer-extra": "^3.3.4",
+		"puppeteer-extra-plugin-stealth": "^2.11.0"
+	}
+}
