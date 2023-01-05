@@ -3,14 +3,14 @@ const fs = require('fs');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
-const { r, log, logD, desktop, device, badAccounts, r15, r23, win } = require('./src/helpers');
+const { r, log, logD, desktop, mobile, badAccounts, r15, r23, win } = require('./src/helpers');
 const { cvrLetter } = require('./src/coverLetter.js');
 
 (async () => {
 	try {
 
-		//----initialize
-		const browser = await puppeteer.launch({ headless: false, args: ['--start-in-incognito', '--window-size=1920,1047', '--window-position=0,0'] });
+		//----initialize  //   '--window-size=1920,1047', '--window-position=0,0'
+		const browser = await puppeteer.launch({ headless: false, args: ['--start-in-incognito'] });
 		const page = await browser.newPage();
 		await page.emulate(desktop);
 
@@ -21,13 +21,33 @@ const { cvrLetter } = require('./src/coverLetter.js');
 			await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.click('div[data-gnav-element-name="SignIn"]')]);
 			await page.waitForTimeout(r15);
 		}
+		//---- email
+		const emailinput = await page.$('#ifl-InputFormField-3');
+		if (emailinput) {
+			await page.type('#ifl-InputFormField-3', process.env.INDEEDMAIL);
+			await page.waitForTimeout(r15);
+			await page.keyboard.press('Tab');
+			await page.waitForTimeout(r15);
+			await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.keyboard.press('Enter')]);
+		}
+		//---- pw
+		const passwordinput = await page.$('#ifl-InputFormField-21');
+		if (passwordinput) {
+			await page.type('#ifl-InputFormField-21', process.env.INDEEDPW);
+			await page.waitForTimeout(r15);
+			await page.keyboard.press('Tab');
+			await page.waitForTimeout(r15);
+			await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.keyboard.press('Enter')]);
+		}
 
+		await page.goto('https://www.indeed.com/jobs?q=full+stack+software+engineer&sc=0kf%3Aattr%28DSQF7%29%3B', { waitUntil: 'networkidle2' });
 
+		const jobCards = await page.$$('td.indeedApply', cards => cards.map(card => card.getattribute('href')));
+		console.log(jobCards);
 		/*
+				await page.waitForSelector('#ifl-InputFormField-3', { visible: true });
 		
-				await page.waitForSelector("input[name='username']", { visible: true });
-				await page.tap("input[name='username']");
-				await page.type("input[name='username']", process.env.DKS, { delay: r(50, 100) });
+				await page.type('#ifl-InputFormField-3', process.env.DKS, { delay: r(50, 100) });
 				await page.type("input[name='password']", process.env.PW, { delay: r(50, 100) });
 				await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.tap("[type='submit']")]);
 				await page.waitForTimeout(r15);

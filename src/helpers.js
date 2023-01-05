@@ -20,7 +20,7 @@ function log(data) {
 
 
 // pretends this is a phone not a desktop
-const device = {
+const mobile = {
 	name: 'iPhone 13 Pro Max',
 	userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.2 Mobile/15E148 Safari/604.1',
 	viewport: {
@@ -53,4 +53,4 @@ const hCookie = {
 }
 
 
-module.exports = { device, r, log, r15, r23, hCookie, desktop }; //timeNow,timeFin,
+module.exports = { mobile, r, log, r15, r23, hCookie, desktop }; //timeNow,timeFin,
