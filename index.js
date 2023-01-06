@@ -3,19 +3,27 @@ const fs = require('fs');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
-const { r, log, logD, desktop, mobile, badAccounts, r15, r23, win } = require('./src/helpers');
+const { r, log, logD, desktop, mobile, r15, r23, login } = require('./src/helpers');
 const { cvrLetter } = require('./src/coverLetter.js');
 
 (async () => {
 	try {
 
 		//----initialize  //   '--window-size=1920,1047', '--window-position=0,0'
-		const browser = await puppeteer.launch({ headless: false, args: ['--start-in-incognito'] });
+		const browser = await puppeteer.launch({ headless: false, args: ['--start-in-incognito', '--window-size=1920,1047', '--window-position=0,0'] });
 		const page = await browser.newPage();
 		await page.emulate(desktop);
+		await page.goto('https://www.indeed.com', { waitUntil: 'networkidle2' });
+		await page.waitForTimeout(r15);
 
-		//----login
-		await page.goto('https://www.indeed.com/?from=gnav-viewjob&from=gnav-util-homepage', { waitUntil: 'networkidle2' });
+		//----login function logic uses stored cookies or not
+		login();
+
+
+
+
+
+
 		const signIn = await page.$('div[data-gnav-element-name="SignIn"]');
 		if (signIn) {
 			await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.click('div[data-gnav-element-name="SignIn"]')]);
@@ -39,6 +47,9 @@ const { cvrLetter } = require('./src/coverLetter.js');
 			await page.waitForTimeout(r15);
 			await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.keyboard.press('Enter')]);
 		}
+
+		const cookies = await page.cookies();
+		fs.writeFileSync('cookies.json', JSON.stringify(cookies));
 
 		await page.goto('https://www.indeed.com/jobs?q=full+stack+software+engineer&sc=0kf%3Aattr%28DSQF7%29%3B', { waitUntil: 'networkidle2' });
 
